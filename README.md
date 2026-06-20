@@ -2,8 +2,6 @@
 
 A high-performance, responsive web application that detects malicious text messages, phishing emails, and fraudulent spam inputs. This project features a **hybrid production architecture** that combines machine learning classification with a custom heuristic validation layer to handle complex adversarial inputs.
 
-* **Live GitHub Pages App:** [https://kunwardevvratsingh-max.github.io/AI-Spam-Detector/](https://kunwardevvratsingh-max.github.io/AI-Spam-Detector/)
-* **GitHub Repository:** [https://github.com/kunwardevvratsingh-max/AI-Spam-Detector](https://github.com/kunwardevvratsingh-max/AI-Spam-Detector)
 
 ---
 
@@ -40,11 +38,4 @@ The underlying classifier trains on a standard dataset of 5,572 real-world text 
 
 ---
 
-## 🛠️ How to Run Locally
 
-If you'd like to inspect or run the source code directly on your desktop machine:
-
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/kunwardevvratsingh-max/AI-Spam-Detector.git](https://github.com/kunwardevvratsingh-max/AI-Spam-Detector.git)
-   cd AI-Spam-Detector
