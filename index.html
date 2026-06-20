@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -29,7 +30,6 @@ st.write("This application runs machine learning directly inside your browser vi
 
 @st.cache_data
 def load_massive_data():
-    # Direct remote fallback dataset to bypass local folder structural constraints
     url = "https://raw.githubusercontent.com/mohitgupta-1O1/Kaggle-SMS-Spam-Collection-Dataset-/master/spam.csv"
     data = pd.read_csv(url, encoding='latin-1')
     data = data[['v1', 'v2']]
@@ -44,7 +44,6 @@ def train_production_model(data):
     y = data['label'] 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Bi-grams combined with lower smoothing safely isolates phishing patterns
     ml_pipeline = Pipeline([
         ('tfidf', TfidfVectorizer(stop_words='english', lowercase=True, ngram_range=(1, 2))),
         ('classifier', MultinomialNB(alpha=0.1))
@@ -65,16 +64,49 @@ user_input = st.text_area("Paste any suspicious email or SMS message below:")
 
 if st.button("Analyze with AI"):
     if user_input.strip() != "":
-        prediction = model.predict([user_input])[0]
-        probabilities = model.predict_proba([user_input])[0]
-        ham_confidence = probabilities[0] * 100
-        spam_confidence = probabilities[1] * 100
+        cleaned_input = user_input.lower()
         
+        # 🛡️ Hybrid System Rule-Based Overrides
+        is_heuristic_spam = False
+        reason = ""
+        
+        if "bank details" in cleaned_input or "account details" in cleaned_input:
+            if any(word in cleaned_input for word in ["share", "provide", "send", "give", "verify"]):
+                is_heuristic_spam = True
+                reason = "Heuristic Alert: Unsolicited request for sensitive financial data."
+                
+        if "won" in cleaned_input or "congrats" in cleaned_input:
+            if any(curr in cleaned_input for curr in ["1cr", "crore", "lakh", "$", "£", "prize"]):
+                is_heuristic_spam = True
+                reason = "Heuristic Alert: Unverified financial lottery trap detected."
+
         st.write("---")
-        if prediction == 'spam':
-            st.error(f"🚨 **System Alert: This looks like SPAM.** AI Confidence: {spam_confidence:.2f}%")
+        if is_heuristic_spam:
+            st.error(f"🚨 **System Alert: This looks like SPAM / PHISHING.**")
+            st.warning(f"⚠️ {reason}")
+            st.write("AI Confidence Score: **100.00%** probability of malicious intent (Rule Overrides).")
+            
+            # Show standard chart comparison for visual completeness
+            chart_data = pd.DataFrame({'Classification': ['Safe (Ham)', 'Spam'], 'Probability (%)': [0.0, 100.0]})
+            st.bar_chart(data=chart_data, x='Classification', y='Probability (%)')
         else:
-            st.success(f"✅ **System Verified: Legitimate (HAM).** AI Confidence: {ham_confidence:.2f}%")
+            prediction = model.predict([user_input])[0]
+            probabilities = model.predict_proba([user_input])[0]
+            ham_confidence = probabilities[0] * 100
+            spam_confidence = probabilities[1] * 100
+            
+            if prediction == 'spam':
+                st.error(f"🚨 **System Alert: This looks like SPAM.**")
+                st.write(f"AI Confidence: **{spam_confidence:.2f}%** probability of malicious intent.")
+            else:
+                st.success(f"✅ **System Verified: Legitimate (HAM).**")
+                st.write(f"AI Confidence: **{ham_confidence:.2f}%** probability of safety.")
+                
+            chart_data = pd.DataFrame({
+                'Classification': ['Safe (Ham)', 'Spam'],
+                'Probability (%)': [ham_confidence, spam_confidence]
+            })
+            st.bar_chart(data=chart_data, x='Classification', y='Probability (%)')
     else:
         st.warning("Please paste some text first!")
 `
