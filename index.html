@@ -77,6 +77,10 @@ if st.button("Analyze with AI"):
             if any(curr in cleaned_input for curr in ["1cr", "crore", "lakh", "$", "£", "prize"]):
                 is_heuristic_spam = True
                 reason = "Heuristic Alert: Unverified financial lottery trap detected."
+        if any(token in cleaned_input for token in ["otp", "one time password", "verification code", "secret pin"]):
+            if any(word in cleaned_input for word in ["tell", "share", "send", "give", "provide", "forward"]):
+                is_heuristic_spam = True
+                reason = "Heuristic Alert: High-risk credential harvesting/OTP interception pattern detected."
 
         st.write("---")
         if is_heuristic_spam:
