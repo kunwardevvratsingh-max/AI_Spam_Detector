@@ -2,7 +2,8 @@
 
 A high-performance, responsive web application that detects malicious text messages, phishing emails, and fraudulent spam inputs. This project features a **hybrid production architecture** that combines machine learning classification with a custom heuristic validation layer to handle complex adversarial inputs.
 
-Live Demo: [View Live Application](https://kunwardevvratsingh-max.github.io/AI-Spam-Detector/)
+* **Live GitHub Pages App:** [https://kunwardevvratsingh-max.github.io/AI-Spam-Detector/](https://kunwardevvratsingh-max.github.io/AI-Spam-Detector/)
+* **GitHub Repository:** [https://github.com/kunwardevvratsingh-max/AI-Spam-Detector](https://github.com/kunwardevvratsingh-max/AI-Spam-Detector)
 
 ---
 
@@ -20,8 +21,8 @@ Live Demo: [View Live Application](https://kunwardevvratsingh-max.github.io/AI-S
 In real-world cybersecurity ecosystems, relying solely on standalone machine learning models leaves apps vulnerable to adversarial text (e.g., when spam phrases are buried inside high-frequency "friendly" words like *"please share"*). 
 
 This project implements a multi-tiered security pipeline:
-1. **The Heuristic Pre-Filter:** Intercepts incoming strings to check for high-risk financial fraud strings and unverified high-value reward claims (e.g., regional phrases like "1cr", "lakh").
-2. **The ML Core Pipeline (Fallback):** If no hard rules are triggered, a Multinomial Naive Bayes model processes the text through a TF-IDF Vectorizer tuned with Laplace smoothing ($\alpha=0.1$) to deliver high-precision probability scores.
+1. **The Heuristic Pre-Filter:** Intercepts incoming strings to check for high-risk financial fraud strings and unverified high-value reward claims (e.g., regional phrases like "1cr", "lakh", or "$").
+2. **The ML Core Pipeline (Fallback):** If no hard rules are triggered, a固定 Multinomial Naive Bayes model processes the text through a TF-IDF Vectorizer tuned with Laplace smoothing ($\alpha=0.1$) to deliver high-precision probability scores.
 
 ### Technologies Used:
 * **Frontend/UI:** Streamlit / `stlite` (WebAssembly implementation)
@@ -44,6 +45,6 @@ The underlying classifier trains on a standard dataset of 5,572 real-world text 
 If you'd like to inspect or run the source code directly on your desktop machine:
 
 1. **Clone the repository:**
-```bash
+   ```bash
    git clone [https://github.com/kunwardevvratsingh-max/AI-Spam-Detector.git](https://github.com/kunwardevvratsingh-max/AI-Spam-Detector.git)
    cd AI-Spam-Detector
