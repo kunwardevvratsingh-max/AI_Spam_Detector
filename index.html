@@ -60,29 +60,28 @@ user_input = st.text_area("Paste any suspicious email or SMS message below:")
 
 if st.button("Analyze with AI"):
     if user_input.strip() != "":
-        cleaned_input = user_input.lower()
+        cleaned_input = user_input.lower().strip()
         
         # 🛡️ Hybrid System Rule-Based Overrides
         is_heuristic_spam = False
         reason = ""
         
-        # Rule 1: Financial credentials and account collection
-        if "bank details" in cleaned_input or "account details" in cleaned_input or "share details" in cleaned_input:
+        # Rule 1: Direct credential interception (Aggressive OTP harvesting protection)
+        if any(token in cleaned_input for token in ["otp", "one time password", "verification code", "secret pin", "cvv"]):
+            is_heuristic_spam = True
+            reason = "Heuristic Alert: High-risk credential harvesting or OTP interception pattern detected."
+
+        # Rule 2: Financial credentials and account collection
+        elif "bank details" in cleaned_input or "account details" in cleaned_input or "share details" in cleaned_input:
             if any(word in cleaned_input for word in ["share", "provide", "send", "give", "verify", "tell"]):
                 is_heuristic_spam = True
                 reason = "Heuristic Alert: Unsolicited request for sensitive financial or account identifiers."
                 
-        # Rule 2: Multi-currency Lottery and reward traps (Catches standalone or attached text like $100)
-        elif any(trigger in cleaned_input for trigger in ["won", "congrats", "won ", "winner", "lottery"]):
+        # Rule 3: Multi-currency Lottery and reward traps
+        elif any(trigger in cleaned_input for trigger in ["won", "congrats", "winner", "lottery"]):
             if any(curr in cleaned_input for curr in ["1cr", "crore", "lakh", "$", "£", "€", "prize", "cash"]):
                 is_heuristic_spam = True
                 reason = "Heuristic Alert: Unverified financial reward, lottery lure, or prize trap detected."
-
-        # Rule 3: Direct credential interception (OTP harvesting protection)
-        elif any(token in cleaned_input for token in ["otp", "one time password", "verification code", "secret pin"]):
-            if any(word in cleaned_input for word in ["tell", "share", "send", "give", "provide", "forward"]):
-                is_heuristic_spam = True
-                reason = "Heuristic Alert: High-risk credential harvesting or OTP interception pattern detected."
 
         st.write("---")
         if is_heuristic_spam:
